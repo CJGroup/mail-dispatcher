@@ -1,0 +1,12 @@
+{
+  "name": "mail-dispatcher",
+  "version": "0.0.0-development",
+  "private": "true",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "keywords": [],
+  "author": "ConstasJ <constasj@qq.com>"
+}
