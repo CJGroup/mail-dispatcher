@@ -22,7 +22,7 @@ export function sendEmail(addr:string, nickname?: string){
         attachments: [
             {
                 filename: 'logo.png',
-                path: resolve(__dirname,'../logo.png'),
+                path: 'http://www.data07.cn/assets/images/yyhjlogo.png',
                 cid: 'Logo'
             }
         ]

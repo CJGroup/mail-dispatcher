@@ -4,8 +4,10 @@
   "private": "true",
   "description": "",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "start": "node lib/index.js"
   },
   "keywords": [],
   "author": "ConstasJ <constasj@qq.com>",
