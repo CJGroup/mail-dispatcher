@@ -129,6 +129,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
- *lock*
- lib/
+*lock*
+lib/
 pnpm-lock.yaml
