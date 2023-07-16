@@ -1,5 +1,5 @@
 import e from "express";
-import { ListAPIBody, User } from "./types";
+import { ListAPIBody, ListSendBody, User } from "./types";
 import { sendEmail } from "./email";
 import morgan from "morgan";
 
@@ -38,6 +38,20 @@ app.post('/list/remove', (req, res) => {
     }catch(e){
         console.log(e);
         res.status(500).end('Server Internal Error!');
+    }
+})
+
+app.get('/list/send/all', (req, res)=>{
+    for(const user of list){
+        sendEmail(user.mail, user.nickname);
+    }
+})
+
+app.post('/list/send', (req, res)=>{
+    const body = req.body as ListSendBody;
+    for(let i=0;i<body.number;i++){
+        const user = list[i];
+        sendEmail(user.mail, user.nickname);
     }
 })
 

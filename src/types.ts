@@ -3,6 +3,10 @@ export interface ListAPIBody {
     mail: string,
 }
 
+export interface ListSendBody {
+    number: number,
+}
+
 export interface User {
     id: number,
     nickname: string,
