@@ -15,3 +15,9 @@ export interface User {
     mail: string,
     isValidated?: boolean,
 }
+
+export interface Store {
+    count: number,
+    idl: number
+    list: ListMember[],
+}
