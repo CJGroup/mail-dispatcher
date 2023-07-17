@@ -3,6 +3,10 @@ export interface ListAPIBody {
     mail: string,
 }
 
+export interface ListBatchAPIBody {
+    list: ListAPIBody[]
+}
+
 export type ListMember = ListAPIBody;
 
 export interface ListSendBody {
