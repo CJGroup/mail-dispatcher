@@ -47,9 +47,14 @@ export function initBackend() {
       nickname: body.nickname,
       mail: body.mail,
     });
+    const index = list.findIndex((val)=> body.mail === val.mail || body.nickname === val.nickname );
     res.status(200).json({
       code: 0,
       message: "Success!",
+      book: {
+        pos: index+1,
+        total: count,
+      }
     })
   });
 
@@ -67,14 +72,20 @@ export function initBackend() {
       .end()
   );
 
-  app.get("/list/get", (req, res)=>{
-    if( !req.query.mail || !req.query.nickname ){
+  app.get("/list/get/self", (req, res)=>{
+    if( !req.query.mail && !req.query.nickname ){
       res.status(500).json({
         code:40,
         message: "Missing Params!"
       });
     }else{
-      const index = list.findIndex((val)=> req.query.mail === val.mail && req.query.nickname );
+      const index = list.findIndex((val)=> req.query.mail === val.mail || req.query.nickname === val.nickname );
+      if(index == -1){
+        res.status(500).json({
+          code:64,
+          message: "No this player in the list!"
+        })
+      }
       res.status(200).json({
         code:0,
         message: "success",
