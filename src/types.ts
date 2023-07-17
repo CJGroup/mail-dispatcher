@@ -19,5 +19,5 @@ export interface User {
 export interface Store {
     count: number,
     idl: number
-    list: ListMember[],
+    list: User[],
 }

@@ -11,8 +11,12 @@ function write(obj:Record<string,any>){
 
 export function addToList(mem: ListMember){   
     const store = read();
-    store.list.push(mem);
     store.idl++;store.count++;
+    store.list.push({
+        id: store.idl,
+        nickname: mem.nickname,
+        mail: mem.mail,
+    });
     write(store);
 }
 
