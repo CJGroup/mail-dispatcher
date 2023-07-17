@@ -11,4 +11,5 @@ COPY . /app/
 RUN pnpm build
 
 EXPOSE 80
+VOLUME [ "/data" ]
 CMD ["npm", "start"]

@@ -1,0 +1,11 @@
+name: 'saku-mail'
+services:
+  api:
+    image: sakurarealm-docker.pkg.coding.net/sakurasite/major/saku-mail:latest
+    ports:
+      - "18080:80"
+    volumes:
+      - mail:/data:rw
+
+volumes:
+  mail:

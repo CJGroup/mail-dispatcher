@@ -2,13 +2,10 @@ import e from "express";
 import { ListAPIBody, ListSendBody, User } from "./types";
 import { sendEmail } from "./email";
 import morgan from "morgan";
+import { addToList, getCount, getList, removeInList } from "./list";
 
 export function initBackend() {
   const app = e();
-
-  const list: User[] = [];
-  let count = 0;
-  let idl = 0;
 
   app.use(morgan("dev"));
   app.use(e.json());
@@ -27,7 +24,7 @@ export function initBackend() {
 
   app.post("/list/add", (req, res) => {
     const body = req.body as ListAPIBody;
-    if( list.findIndex((val) => val.mail == body.mail ) !== -1 ){
+    if( getList().findIndex((val) => val.mail == body.mail ) !== -1 ){
       res.status(500).json({
         code:53,
         message: "This Email is already in our list!"
@@ -41,19 +38,17 @@ export function initBackend() {
       });
       return;
     }
-    count++;idl++;
-    list.push({
-      id: idl,
+    addToList({
       nickname: body.nickname,
       mail: body.mail,
-    });
-    const index = list.findIndex((val)=> body.mail === val.mail || body.nickname === val.nickname );
+    })
+    const index = getList().findIndex((val)=> body.mail === val.mail || body.nickname === val.nickname );
     res.status(200).json({
       code: 0,
       message: "Success!",
       book: {
         pos: index+1,
-        total: count,
+        total: getCount(),
       }
     })
   });
@@ -65,8 +60,8 @@ export function initBackend() {
         code: 0,
         message: "success",
         data: {
-          count: count,
-          list: list,
+          count: getCount(),
+          list: getList(),
         }
       })
       .end()
@@ -79,7 +74,7 @@ export function initBackend() {
         message: "Missing Params!"
       });
     }else{
-      const index = list.findIndex((val)=> req.query.mail === val.mail || req.query.nickname === val.nickname );
+      const index = getList().findIndex((val)=> req.query.mail === val.mail || req.query.nickname === val.nickname );
       if(index == -1){
         res.status(500).json({
           code:64,
@@ -90,8 +85,8 @@ export function initBackend() {
         code:0,
         message: "success",
         data:{
-          pos: index,
-          total: count,
+          pos: index+1,
+          total: getCount(),
         }
       })
     }
@@ -100,11 +95,10 @@ export function initBackend() {
   app.post("/list/remove", (req, res) => {
     const body = req.body as ListAPIBody;
     try {
-      const num = list.findIndex(
+      const num = getList().findIndex(
         (value) => value.nickname === body.nickname && value.mail === body.mail
       );
-      list.splice(num, 1);
-      count--;
+      removeInList(num, 1);
       res.status(200).end("Success!");
     } catch (e) {
       console.log(e);
@@ -116,17 +110,17 @@ export function initBackend() {
   });
 
   app.get("/list/send/all", (req, res) => {
-    if(count === 0){
+    if(getCount() === 0){
       res.status(500).json({
         code: 95,
         message: "No players on our list!",
       })
       return;
     }
-    for (const user of list) {
+    for (const user of getList()) {
       sendEmail(user.mail, user.nickname);
     }
-    list.splice(0,list.length);
+    removeInList(0,getList().length);
     res.status(200).json({
       code: 0,
       message: "success",
@@ -135,7 +129,7 @@ export function initBackend() {
 
   app.post("/list/send", (req, res) => {
     const body = req.body as ListSendBody;
-    if(body.number > count){
+    if(body.number > getCount()){
       res.status(500).json({
         code: 101,
         message: "the number you provided is larger than the players on our list!"
@@ -143,10 +137,10 @@ export function initBackend() {
       return;
     }
     for (let i = 0; i < body.number; i++) {
-      const user = list[i];
+      const user = getList()[i];
       sendEmail(user.mail, user.nickname);
     }
-    list.splice(0,body.number);
+    removeInList(0, body.number);
     res.status(200).json({
       code: 0,
       message: "success",
