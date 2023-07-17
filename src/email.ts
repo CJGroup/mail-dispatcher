@@ -12,8 +12,7 @@ const transporter = createTransport({
         pass: '2uLen6khqDrAz3Kh',
     }
 },{
-    from: 'oasis-auth@dm.sakura-realm.ink',
-    sender: '芸樱绘境',
+    from: '芸樱绘境 oasis-auth@dm.sakura-realm.ink',
 });
 
 export function sendEmail(addr:string, nickname?: string){

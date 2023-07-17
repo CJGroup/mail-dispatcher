@@ -5,9 +5,7 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY package.json /app
 
-RUN npm config set registry https://registry.npmmirror.com
-RUN npm i -g pnpm
-RUN pnpm install
+RUN npm config set registry https://registry.npmmirror.com && npm i -g pnpm && pnpm install
 
 COPY . /app/
 RUN pnpm build
