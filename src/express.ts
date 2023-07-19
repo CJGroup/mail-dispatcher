@@ -1,5 +1,5 @@
 import e from "express";
-import { ListAPIBody, ListBatchAPIBody, ListSendBody, User } from "./types";
+import { BookInfo, ListAPIBody, ListBatchAPIBody, ListSendBody, User } from "./types";
 import { sendEmail } from "./email";
 import morgan from "morgan";
 import { addToList, getCount, getList, removeInList } from "./list";
@@ -25,14 +25,14 @@ export function initBackend() {
   app.post("/list/add", (req, res) => {
     const body = req.body as ListAPIBody;
     if( getList().findIndex((val) => val.mail == body.mail ) !== -1 ){
-      res.status(500).json({
+      res.status(406).json({
         code:53,
         message: "This Email is already in our list!"
       })
       return;
     }
     if( !body.nickname || !body.mail ){
-      res.status(500).json({
+      res.status(400).json({
         code:40,
         message: "Missing Params!"
       });
@@ -52,6 +52,46 @@ export function initBackend() {
       }
     })
   });
+
+  app.post("list/add/batch", (req, res)=>{
+    const body = req.body as ListBatchAPIBody;
+    let isContinue:boolean = true;
+    body.list.map((mem)=>{
+      if( getList().findIndex((val)=> val.mail === mem.mail) !== -1 ) {
+        res.status(406).json({
+          code: 53,
+          message: "This Email is already in our list!",
+        });
+        isContinue = false;
+      }
+      if( !mem.nickname || !mem.mail ) {
+        res.status(400).json({
+          code:40,
+          message: "Missing Params!"
+        });
+        isContinue = false;
+      }
+    })
+    if(!isContinue) return;
+    const bookList:BookInfo[] = [];
+    for( const member of body.list ){
+      addToList({
+        nickname: member.nickname,
+        mail: member.mail,
+      });
+      bookList.push({
+        pos: getList().findIndex((val)=> member.mail === val.mail || member.nickname === val.nickname ),
+        total: getCount(),
+      });
+    }
+    res.status(200).json({
+      code: 0,
+      message: "success",
+      data: {
+        bookList,
+      },
+    })
+  })
 
   app.get("/list/get", (req, res) =>
     res

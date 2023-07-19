@@ -25,3 +25,8 @@ export interface Store {
     idl: number
     list: User[],
 }
+
+export interface BookInfo {
+    pos: number,
+    total: number,
+}
