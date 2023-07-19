@@ -31,7 +31,7 @@ export function initBackend() {
       })
       return;
     }
-    if( !body.nickname || !body.mail || !body.serverID ){
+    if( !body.nickname || !body.mail ){
       res.status(400).json({
         code:40,
         message: "Missing Params!"
@@ -65,7 +65,7 @@ export function initBackend() {
         });
         isContinue = false;
       }
-      if( !mem.nickname || !mem.mail || !mem.serverID ) {
+      if( !mem.nickname || !mem.mail ) {
         res.status(400).json({
           code:40,
           message: "Missing Params!"
@@ -138,7 +138,7 @@ export function initBackend() {
     const body = req.body as ListAPIBody;
     try {
       const num = getList().findIndex(
-        (value) => value.nickname === body.nickname && value.mail === body.mail && value.serverID === body.serverID
+        (value) => value.nickname === body.nickname && value.mail === body.mail
       );
       removeInList(num, 1);
       res.status(200).json({
