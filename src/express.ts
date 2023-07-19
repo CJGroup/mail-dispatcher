@@ -41,6 +41,7 @@ export function initBackend() {
     addToList({
       nickname: body.nickname,
       mail: body.mail,
+      serverID: body.serverID,
     })
     const index = getList().findIndex((val)=> body.mail === val.mail || body.nickname === val.nickname );
     res.status(200).json({

@@ -1,6 +1,7 @@
 export interface ListAPIBody {
     nickname: string,
     mail: string,
+    serverID: string,
 }
 
 export interface ListBatchAPIBody {
@@ -17,6 +18,7 @@ export interface User {
     id: number,
     nickname: string,
     mail: string,
+    serverID: string,
     isValidated?: boolean,
 }
 
