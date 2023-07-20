@@ -9,6 +9,7 @@ import {
 import { sendEmail } from "./email";
 import morgan from "morgan";
 import { addToList, getCount, getList, removeInList } from "./store";
+import { initAuthentication } from "./feishu";
 
 export function initBackend() {
   const app = e();
@@ -224,6 +225,8 @@ export function initBackend() {
       message: "success",
     });
   });
+
+  initAuthentication(app);
 
   app.listen(80, () => {
     console.log("Start Listening on port 80!");

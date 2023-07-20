@@ -161,3 +161,10 @@
  * @apiBody {String} [list.serverID] 服务器ID
  * @apiUse SuccessBase
  */
+/**
+ * @api {GET} /feishu/redirect 飞书OAuth回调
+ * @apiName Get FeishuCallback
+ * @apiGroup 飞书
+ * @apiDescription 飞书OAuth2登录回调API
+ * @apiQuery {String} code 返回的code
+ */
