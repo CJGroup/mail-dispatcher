@@ -1,40 +1,95 @@
 import e from "express";
-import { BookInfo, ListAPIBody, ListBatchAPIBody, ListSendBody, User } from "./types";
+import {
+  BookInfo,
+  ListAPIBody,
+  ListBatchAPIBody,
+  ListSendBody,
+  User,
+} from "./types";
 import { sendEmail } from "./email";
 import morgan from "morgan";
-import { addToList, getCount, getList, removeInList } from "./list";
+import { addToList, getCount, getList, removeInList } from "./store";
+
+/**
+ * @apiDefine SuccessBase
+ * @apiSuccess {Number} code 响应代码，默认为0
+ * @apiSuccess {Number} message 响应消息，默认为success
+ */
+
+/**
+ * @apiDefine ErrorBase
+ * @apiError {Number} code 响应代码
+ * @apiError {String} message 响应消息
+ */
 
 export function initBackend() {
   const app = e();
 
   app.use(morgan("dev"));
   app.use(e.json());
+  app.use("/doc", e.static("./doc"));
 
-  app.all('*', (req, res, next)=>{
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header('Content-Type', 'application/json;charset=utf-8');
+  app.all("*", (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Content-Type", "application/json;charset=utf-8");
     next();
-  })
+  });
 
   app.get("/", (req, res) =>
     res.status(200).end("This is Sakurarealm mail system API.")
   );
 
+  /**
+   * @api {POST} /list/add 增加新成员
+   * @apiName Post AddMemberToList
+   * @apiGroup List
+   * @apiDescription 向列表中新增加成员
+   * @apiBody {String} nickname 玩家昵称
+   * @apiBody {String} mail 玩家邮件地址
+   * @apiBody {String} [serverID] 服务器ID
+   * @apiUse SuccessBase
+   * @apiSuccess {Object} book 用户预约信息
+   * @apiSuccess {Number} book.pos 当前用户在列表中的排名
+   * @apiSuccess {Number} book.total 当前列表中的用户总数
+   * @apiSuccessExample {json} 200 添加成功
+   * HTTP/1.1 200 Success
+   * {
+   *    "code": 0,
+   *    "message": "success",
+   *    "book": {
+   *        "pos": 1,
+   *        "total": 1,
+   *    }
+   * }
+   * @apiUse ErrorBase
+   * @apiErrorExample {json} 403 邮件已存在
+   * HTTP/1.1 403 Forbidden
+   * {
+   *    "code": 53,
+   *    "message": "This Email is already in our list!"
+   * }
+   * @apiErrorExample {json} 400 缺失参数
+   * HTTP/1.1 400 Bad Request
+   * {
+   *    "code": 40,
+   *    "message": "Missing Params!"
+   * }
+   */
   app.post("/list/add", (req, res) => {
     const body = req.body as ListAPIBody;
-    if( getList().findIndex((val) => val.mail == body.mail ) !== -1 ){
-      res.status(406).json({
-        code:53,
-        message: "This Email is already in our list!"
-      })
+    if (getList().findIndex((val) => val.mail == body.mail) !== -1) {
+      res.status(403).json({
+        code: 53,
+        message: "This Email is already in our list!",
+      });
       return;
     }
-    if( !body.nickname || !body.mail ){
+    if (!body.nickname || !body.mail) {
       res.status(400).json({
-        code:40,
-        message: "Missing Params!"
+        code: 40,
+        message: "Missing Params!",
       });
       return;
     }
@@ -42,47 +97,56 @@ export function initBackend() {
       nickname: body.nickname,
       mail: body.mail,
       serverID: body.serverID,
-    })
-    const index = getList().findIndex((val)=> body.mail === val.mail || body.nickname === val.nickname );
+    });
+    const index = getList().findIndex(
+      (val) => body.mail === val.mail || body.nickname === val.nickname
+    );
     res.status(200).json({
       code: 0,
       message: "Success!",
       book: {
-        pos: index+1,
+        pos: index + 1,
         total: getCount(),
-      }
-    })
+      },
+    });
   });
-
-  app.post("list/add/batch", (req, res)=>{
+  /**
+   * @api {POST} /list/add/batch 批量添加
+   * @apiName Post BatchAdd
+   * @apiGroup List
+   * @apiBody 
+   */
+  app.post("/list/add/batch", (req, res) => {
     const body = req.body as ListBatchAPIBody;
-    let isContinue:boolean = true;
-    body.list.map((mem)=>{
-      if( getList().findIndex((val)=> val.mail === mem.mail) !== -1 ) {
+    let isContinue: boolean = true;
+    body.list.map((mem) => {
+      if (getList().findIndex((val) => val.mail === mem.mail) !== -1) {
         res.status(406).json({
           code: 53,
           message: "This Email is already in our list!",
         });
         isContinue = false;
       }
-      if( !mem.nickname || !mem.mail ) {
+      if (!mem.nickname || !mem.mail) {
         res.status(400).json({
-          code:40,
-          message: "Missing Params!"
+          code: 40,
+          message: "Missing Params!",
         });
         isContinue = false;
       }
-    })
-    if(!isContinue) return;
-    const bookList:BookInfo[] = [];
-    for( const member of body.list ){
+    });
+    if (!isContinue) return;
+    const bookList: BookInfo[] = [];
+    for (const member of body.list) {
       addToList({
         nickname: member.nickname,
         mail: member.mail,
-        serverID: member.serverID
+        serverID: member.serverID,
       });
       bookList.push({
-        pos: getList().findIndex((val)=> member.mail === val.mail || member.nickname === val.nickname ),
+        pos: getList().findIndex(
+          (val) => member.mail === val.mail || member.nickname === val.nickname
+        ),
         total: getCount(),
       });
     }
@@ -92,8 +156,8 @@ export function initBackend() {
       data: {
         bookList,
       },
-    })
-  })
+    });
+  });
 
   app.get("/list/get", (req, res) =>
     res
@@ -104,35 +168,38 @@ export function initBackend() {
         data: {
           count: getCount(),
           list: getList(),
-        }
+        },
       })
       .end()
   );
 
-  app.get("/list/get/self", (req, res)=>{
-    if( !req.query.mail && !req.query.nickname ){
+  app.get("/list/get/self", (req, res) => {
+    if (!req.query.mail && !req.query.nickname) {
       res.status(500).json({
-        code:40,
-        message: "Missing Params!"
+        code: 40,
+        message: "Missing Params!",
       });
-    }else{
-      const index = getList().findIndex((val)=> req.query.mail === val.mail || req.query.nickname === val.nickname );
-      if(index == -1){
-        res.status(500).json({
-          code:64,
-          message: "No this player in the list!"
-        })
+    } else {
+      const index = getList().findIndex(
+        (val) =>
+          req.query.mail === val.mail || req.query.nickname === val.nickname
+      );
+      if (index == -1) {
+        res.status(404).json({
+          code: 64,
+          message: "No this player in the list!",
+        });
       }
       res.status(200).json({
-        code:0,
+        code: 0,
         message: "success",
-        data:{
-          pos: index+1,
+        data: {
+          pos: index + 1,
           total: getCount(),
-        }
-      })
+        },
+      });
     }
-  })
+  });
 
   app.post("/list/remove", (req, res) => {
     const body = req.body as ListAPIBody;
@@ -142,43 +209,44 @@ export function initBackend() {
       );
       removeInList(num, 1);
       res.status(200).json({
-        code:0,
-        message: "success"
-      })
+        code: 0,
+        message: "success",
+      });
     } catch (e) {
       console.log(e);
       res.status(500).json({
         code: 300,
         message: e,
-      })
+      });
     }
   });
 
   app.get("/list/send/all", (req, res) => {
-    if(getCount() === 0){
+    if (getCount() === 0) {
       res.status(500).json({
         code: 95,
         message: "No players on our list!",
-      })
+      });
       return;
     }
     for (const user of getList()) {
       sendEmail(user.mail, user.nickname);
     }
-    removeInList(0,getList().length);
+    removeInList(0, getList().length);
     res.status(200).json({
       code: 0,
       message: "success",
-    })
+    });
   });
 
   app.post("/list/send", (req, res) => {
     const body = req.body as ListSendBody;
-    if(body.number > getCount()){
+    if (body.number > getCount()) {
       res.status(500).json({
         code: 101,
-        message: "the number you provided is larger than the players on our list!"
-      })
+        message:
+          "the number you provided is larger than the players on our list!",
+      });
       return;
     }
     for (let i = 0; i < body.number; i++) {
@@ -189,28 +257,28 @@ export function initBackend() {
     res.status(200).json({
       code: 0,
       message: "success",
-    })
-  });
-
-  app.post('/send',(req, res)=>{
-    const body = req.body as ListAPIBody;
-    sendEmail(body.mail,body.nickname);
-    res.status(200).json({
-      code:0,
-      message:'success',
     });
   });
 
-  app.post('/send/batch',(req, res)=>{
+  app.post("/send", (req, res) => {
+    const body = req.body as ListAPIBody;
+    sendEmail(body.mail, body.nickname);
+    res.status(200).json({
+      code: 0,
+      message: "success",
+    });
+  });
+
+  app.post("/send/batch", (req, res) => {
     const body = req.body as ListBatchAPIBody;
-    for(const player of body.list){
+    for (const player of body.list) {
       sendEmail(player.mail, player.nickname);
     }
     res.status(200).json({
-      code:0,
-      message:'success',
+      code: 0,
+      message: "success",
     });
-  })
+  });
 
   app.listen(80, () => {
     console.log("Start Listening on port 80!");
