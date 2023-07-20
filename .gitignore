@@ -132,3 +132,4 @@ dist
 *lock*
 lib/
 pnpm-lock.yaml
+doc/
