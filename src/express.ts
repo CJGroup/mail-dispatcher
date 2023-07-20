@@ -25,9 +25,7 @@ export function initBackend() {
     next();
   });
 
-  app.get("/", (req, res) =>
-    res.status(200).end("This is Sakurarealm mail system API.")
-  );
+  app.get("/", (req, res) => res.redirect("/doc"));
 
   app.post("/list/add", (req, res) => {
     const body = req.body as ListAPIBody;
