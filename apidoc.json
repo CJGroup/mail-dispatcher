@@ -1,1 +1,5 @@
-{}
+{
+    "name": "SakuraRealm Mail System API",
+    "description": "芸樱绘境预约入境管理系统后端API",
+    "version": "2.3.0"
+}
