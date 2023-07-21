@@ -32,3 +32,7 @@ export interface BookInfo {
     pos: number,
     total: number,
 }
+
+export interface FeishuLogin {
+    code: string,
+}

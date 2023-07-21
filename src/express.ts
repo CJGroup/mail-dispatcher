@@ -9,7 +9,7 @@ import {
 import { sendEmail } from "./email";
 import morgan from "morgan";
 import { addToList, getCount, getList, removeInList } from "./store";
-import { initAuthentication } from "./feishu";
+import { initAuthentication } from "./auth";
 
 export function initBackend() {
   const app = e();
