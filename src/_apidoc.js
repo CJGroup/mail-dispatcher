@@ -162,7 +162,7 @@
  * @apiUse SuccessBase
  */
 /**
- * @api {GET} /feishu/redirect 飞书OAuth回调
+ * @api {GET} /feishu/redirect OAuth回调
  * @apiName Get FeishuCallback
  * @apiGroup 飞书
  * @apiDescription 飞书OAuth2登录回调API
