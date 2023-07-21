@@ -167,45 +167,6 @@ export function initBackend() {
     }
   });
 
-  app.get("/list/send/all", (req, res) => {
-    if (getCount() === 0) {
-      res.status(404).json({
-        code: 95,
-        message: "No players on our list!",
-      });
-      return;
-    }
-    for (const user of getList()) {
-      sendEmail(user.mail, user.nickname);
-    }
-    removeInList(0, getList().length);
-    res.status(200).json({
-      code: 0,
-      message: "success",
-    });
-  });
-
-  app.post("/list/send", (req, res) => {
-    const body = req.body as ListSendBody;
-    if (body.number > getCount()) {
-      res.status(500).json({
-        code: 101,
-        message:
-          "the number you provided is larger than the players on our list!",
-      });
-      return;
-    }
-    for (let i = 0; i < body.number; i++) {
-      const user = getList()[i];
-      sendEmail(user.mail, user.nickname);
-    }
-    removeInList(0, body.number);
-    res.status(200).json({
-      code: 0,
-      message: "success",
-    });
-  });
-
   app.post("/send", (req, res) => {
     const body = req.body as ListAPIBody;
     sendEmail(body.mail, body.nickname);

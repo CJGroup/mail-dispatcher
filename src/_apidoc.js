@@ -107,38 +107,6 @@
  * @apiBody {String} [serverID] 服务器ID
  * @apiUse SuccessBase
  * @apiUSe ErrorBase
- */
-/**
- * @api {GET} /list/send/all 向所有成员发送邮件
- * @apiName Get SendEmailToAll
- * @apiDescription 向列表中的所有人发送邮件
- * @apiGroup 列表
- * @apiPermission admin
- * @apiUse SuccessBase
- * @apiUse ErrorBase
- * @apiErrorExample {json} 404 列表内没有成员
- * HTTP/1.1 404 Not Found
- * {
- *    "code": 95,
- *    "message": "No players on our lists!"
- * }
- */
-/**
- * @api {POST} /list/send 向指定数目成员发送邮件
- * @apiName Post SendEmailToNumberedMember
- * @apiDescription 向指定数目的列表成员（从前往后）发送邮件
- * @apiGroup 列表
- * @apiPermission admin
- * @apiBody {Number} number 要发送的成员数量
- * @apiUse SuccessBase
- * @apiUse ErrorBase
- * @apiErrorExample {json} 500 数目过大
- * HTTP/1.1 500 Internal Server Error
- * {
- *    "code": 101,
- *    "message": "the number you provided is larger than the players on our list!"
- * }
- */
 /**
  * @api {POST} /send 直接发送邮件
  * @apiName Post SendEmail
@@ -151,7 +119,7 @@
  * @apiUse SuccessBase
  */
 /**
- * @api {POST} /list/add/batch 直接批量发送邮件
+ * @api {POST} /send/batch 直接批量发送邮件
  * @apiName Post BatchSendEmail
  * @apiGroup 直接发送
  * @apiDescription 批量直接向目标邮箱中发送邮件
