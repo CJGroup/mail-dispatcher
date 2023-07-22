@@ -1,11 +1,9 @@
 import { Express } from "express-serve-static-core";
+import { expressjwt } from "express-jwt";
 
-import {
-  BookInfo,
-  ListAPIBody,
-  ListBatchAPIBody,
-} from "../types";
+import { BookInfo, ListAPIBody, ListBatchAPIBody } from "../types";
 import { addToList, getCount, getList, removeInList } from "../store";
+import { authMiddleware } from "./auth";
 
 export function initListAPI(app: Express) {
   app.post("/list/add", (req, res) => {

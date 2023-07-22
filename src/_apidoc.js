@@ -137,3 +137,20 @@
  * @apiBody {String} [list.serverID] 服务器ID
  * @apiUse SuccessBase
  */
+/**
+ * @api {POST} /login/feishu 飞书OAuth验证
+ * @apiName Post FeishuOauth
+ * @apiVersion 1.0.0
+ * @apiGroup 登录
+ * @apiDescription 飞书验证页面获取code后通过此API登录
+ * @apiBody {String} code 飞书OAuth获取的code
+ * @apiUse SuccessBase
+ * @apiSuccess {String} token 返回的用于后续登录验证的token，
+ * @apiUse ErrorBase
+ * @apiErrorExample {json} 403 用户不在企业中
+ * HTTP/1.1 403 Forbidden
+ * {
+ *      "code": 35,
+ *      "message": "Your account is not in the SakuraRealm Organization."
+ * }
+ */
