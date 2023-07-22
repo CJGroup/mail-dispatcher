@@ -14,6 +14,8 @@ Player.init(
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
     },
     nickname: {
       type: DataTypes.STRING,
@@ -36,4 +38,4 @@ Player.init(
   { sequelize: db }
 );
 
-Player.sync({ force: true });
+Player.sync();
