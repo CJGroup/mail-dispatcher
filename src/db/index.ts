@@ -17,3 +17,4 @@ export const db = new Sequelize({
 });
 
 export * from './player';
+export * from './user';
