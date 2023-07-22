@@ -1,7 +1,7 @@
 /**
  * @apiDefine SuccessBase
  * @apiSuccess {Number} code 响应代码，默认为0
- * @apiSuccess {Number} message 响应消息，默认为success
+ * @apiSuccess {String} message 响应消息，默认为success
  */
 /**
  * @apiDefine ErrorBase
@@ -10,6 +10,7 @@
  */
 /**
  * @api {POST} /list/add 增加新成员
+ * @apiVersion 1.0.0
  * @apiName Post AddMemberToList
  * @apiGroup 列表
  * @apiDescription 向列表中新增加成员
@@ -36,6 +37,7 @@
  */
 /**
  * @api {POST} /list/add/batch 批量添加
+ * @apiVersion 1.0.0
  * @apiName Post BatchAdd
  * @apiGroup 列表
  * @apiDescription 向列表中批量添加成员
@@ -64,6 +66,7 @@
  */
 /**
  * @api {GET} /list/get 获取列表
+ * @apiVersion 1.0.0
  * @apiName Get List
  * @apiDescription 获取当前预约成员列表
  * @apiGroup 列表
@@ -78,6 +81,7 @@
  */
 /**
  * @api {GET} /list/get/self 获取预约信息
+ * @apiVersion 1.0.0
  * @apiName Get SelfPositionInList
  * @apiDescription 获取提供的用户在列表中的位置
  * @apiGroup 列表
@@ -98,6 +102,7 @@
  */
 /**
  * @api {POST} /list/remove 移除成员
+ * @apiVersion 1.0.0
  * @apiName Post RemoveListNumber
  * @apiDescription 从列表中移除成员
  * @apiGroup 列表
@@ -105,10 +110,12 @@
  * @apiBody {String} nickname 玩家昵称
  * @apiBody {String} mail 玩家邮件地址
  * @apiBody {String} [serverID] 服务器ID
+ * @apiUse ErrorBase
  * @apiUse SuccessBase
- * @apiUSe ErrorBase
+ */
 /**
  * @api {POST} /send 直接发送邮件
+ * @apiVersion 1.0.0
  * @apiName Post SendEmail
  * @apiDescription 直接向目标邮箱发送邮件
  * @apiGroup 直接发送
@@ -120,6 +127,7 @@
  */
 /**
  * @api {POST} /send/batch 直接批量发送邮件
+ * @apiVersion 1.0.0
  * @apiName Post BatchSendEmail
  * @apiGroup 直接发送
  * @apiDescription 批量直接向目标邮箱中发送邮件
@@ -128,11 +136,4 @@
  * @apiBody {String} list.mail 玩家邮件地址
  * @apiBody {String} [list.serverID] 服务器ID
  * @apiUse SuccessBase
- */
-/**
- * @api {GET} /feishu/redirect OAuth回调
- * @apiName Get FeishuCallback
- * @apiGroup 飞书
- * @apiDescription 飞书OAuth2登录回调API
- * @apiQuery {String} code 返回的code
  */

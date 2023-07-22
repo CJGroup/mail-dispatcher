@@ -1,33 +1,13 @@
-import e from "express";
+import { Express } from "express-serve-static-core";
+
 import {
   BookInfo,
   ListAPIBody,
   ListBatchAPIBody,
-  ListSendBody,
-  User,
-} from "./types";
-import { sendEmail } from "./email";
-import morgan from "morgan";
-import { addToList, getCount, getList, removeInList } from "./store";
-import { initAuthentication } from "./auth";
+} from "../types";
+import { addToList, getCount, getList, removeInList } from "../store";
 
-export function initBackend() {
-  const app = e();
-
-  app.use(morgan("dev"));
-  app.use(e.json());
-  app.use("/doc", e.static("./doc"));
-
-  app.all("*", (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
-    res.header("Access-Control-Allow-Methods", "*");
-    res.header("Content-Type", "application/json;charset=utf-8");
-    next();
-  });
-
-  app.get("/", (req, res) => res.redirect("/doc"));
-
+export function initListAPI(app: Express) {
   app.post("/list/add", (req, res) => {
     const body = req.body as ListAPIBody;
     if (getList().findIndex((val) => val.mail == body.mail) !== -1) {
@@ -165,31 +145,5 @@ export function initBackend() {
         message: e,
       });
     }
-  });
-
-  app.post("/send", (req, res) => {
-    const body = req.body as ListAPIBody;
-    sendEmail(body.mail, body.nickname);
-    res.status(200).json({
-      code: 0,
-      message: "success",
-    });
-  });
-
-  app.post("/send/batch", (req, res) => {
-    const body = req.body as ListBatchAPIBody;
-    for (const player of body.list) {
-      sendEmail(player.mail, player.nickname);
-    }
-    res.status(200).json({
-      code: 0,
-      message: "success",
-    });
-  });
-
-  initAuthentication(app);
-
-  app.listen(80, () => {
-    console.log("Start Listening on port 80!");
   });
 }

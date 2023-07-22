@@ -1,5 +1,5 @@
 import { createTransport } from "nodemailer";
-import path, { resolve } from "path";
+import path, { resolve } from "node:path";
 import * as fs from 'node:fs';
 import Hogan from 'hogan.js';
 

@@ -1,3 +1,3 @@
-import { initBackend } from "./express";
+import { initBackend } from "./api";
 
 initBackend();
