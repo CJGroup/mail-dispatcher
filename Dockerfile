@@ -5,10 +5,10 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY package.json /app
 
-RUN npm config set registry https://registry.npmmirror.com && npm i -g pnpm && pnpm install
+RUN npm config set registry https://registry.npmmirror.com && npm ci
 
 COPY . /app/
-RUN pnpm build
+RUN npm build
 
 EXPOSE 80
 VOLUME [ "/data" ]
