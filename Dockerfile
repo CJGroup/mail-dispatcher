@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node
 
 RUN mkdir -p /app
 
