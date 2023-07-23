@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { db } from ".";
+import { db } from "./init";
 
 export class Player extends Model {
   declare id: number;

@@ -6,9 +6,9 @@ import { addToList, getCount, getList, removeInList } from "../store";
 import { authMiddleware } from "./auth";
 
 export function initListAPI(app: Express) {
-  app.post("/list/add", (req, res) => {
+  app.post("/list/add", async (req, res) => {
     const body = req.body as ListAPIBody;
-    if (getList().findIndex((val) => val.mail == body.mail) !== -1) {
+    if ((await getList()).findIndex((val) => val.mail == body.mail) !== -1) {
       res.status(403).json({
         code: 53,
         message: "This Email is already in our list!",
@@ -27,7 +27,7 @@ export function initListAPI(app: Express) {
       mail: body.mail,
       serverID: body.serverID,
     });
-    const index = getList().findIndex(
+    const index = (await getList()).findIndex(
       (val) => body.mail === val.mail || body.nickname === val.nickname
     );
     res.status(200).json({
@@ -35,16 +35,16 @@ export function initListAPI(app: Express) {
       message: "Success!",
       book: {
         pos: index + 1,
-        total: getCount(),
+        total: (await getCount()),
       },
     });
   });
 
-  app.post("/list/add/batch", (req, res) => {
+  app.post("/list/add/batch", async (req, res) => {
     const body = req.body as ListBatchAPIBody;
     let isContinue: boolean = true;
-    body.list.map((mem) => {
-      if (getList().findIndex((val) => val.mail === mem.mail) !== -1) {
+    body.list.map(async (mem) => {
+      if ((await getList()).findIndex((val) => val.mail === mem.mail) !== -1) {
         res.status(406).json({
           code: 53,
           message: "This Email is already in our list!",
@@ -68,10 +68,10 @@ export function initListAPI(app: Express) {
         serverID: member.serverID,
       });
       bookList.push({
-        pos: getList().findIndex(
+        pos: (await getList()).findIndex(
           (val) => member.mail === val.mail || member.nickname === val.nickname
         ),
-        total: getCount(),
+        total: (await getCount()),
       });
     }
     res.status(200).json({
@@ -83,28 +83,28 @@ export function initListAPI(app: Express) {
     });
   });
 
-  app.get("/list/get", (req, res) =>
+  app.get("/list/get", async (req, res) =>
     res
       .status(200)
       .json({
         code: 0,
         message: "success",
         data: {
-          count: getCount(),
-          list: getList(),
+          count: (await getCount()),
+          list: (await getList()),
         },
       })
       .end()
   );
 
-  app.get("/list/get/self", (req, res) => {
+  app.get("/list/get/self", async (req, res) => {
     if (!req.query.mail && !req.query.nickname) {
       res.status(500).json({
         code: 40,
         message: "Missing Params!",
       });
     } else {
-      const index = getList().findIndex(
+      const index = (await getList()).findIndex(
         (val) =>
           req.query.mail === val.mail || req.query.nickname === val.nickname
       );
@@ -119,16 +119,16 @@ export function initListAPI(app: Express) {
         message: "success",
         data: {
           pos: index + 1,
-          total: getCount(),
+          total: (await getCount()),
         },
       });
     }
   });
 
-  app.post("/list/remove", (req, res) => {
+  app.post("/list/remove", async (req, res) => {
     const body = req.body as ListAPIBody;
     try {
-      const num = getList().findIndex(
+      const num = (await getList()).findIndex(
         (value) => value.nickname === body.nickname && value.mail === body.mail
       );
       removeInList(num, 1);
