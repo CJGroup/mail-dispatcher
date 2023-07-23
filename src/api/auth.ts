@@ -8,6 +8,7 @@ import {
 import qs from "qs";
 import jwt from "jsonwebtoken";
 import { User } from "../db";
+import { expressjwt } from "express-jwt";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -60,7 +61,7 @@ export function initAuthentication(app: Express) {
           },
           "SakuraRealm_Wuhen",
           {
-            algorithm: "HS256"
+            algorithm: "HS256",
           }
         ),
       });
@@ -74,24 +75,25 @@ export function initAuthentication(app: Express) {
   });
 }
 
-export async function authMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export const authMiddleware: any[] = [
+  expressjwt({ secret: "SakuraRealm_Wuhen", algorithms: ["HS256"] }),
+  async function (req: Request, res: Response, next: NextFunction) {
     const user = await User.findOne({
-        where:{
-            openID: req.auth.openID,
-            unionID: req.auth.unionID,
-        }
+      where: {
+        openID: req.auth.openID,
+        unionID: req.auth.unionID,
+      },
     });
-    if( !user ) res.status(401).json({
+    if (!user)
+      res.status(401).json({
         code: 1,
-        message: 'Login needed!',
-    })
-    else if( !user.admin ) res.status(403).json({
+        message: "Login needed!",
+      });
+    else if (!user.admin)
+      res.status(403).json({
         code: 3,
-        message: 'You have no permission!',
-    })
+        message: "You have no permission!",
+      });
     else next();
-}
+  },
+];
