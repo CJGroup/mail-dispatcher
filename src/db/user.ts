@@ -7,7 +7,7 @@ export class User extends Model {
     declare openID: string;
     declare tenant: string;
     declare unionID: string;
-    declare admin: boolean;
+    declare permission: number;
 }
 
 User.init({
@@ -21,9 +21,9 @@ User.init({
     openID: DataTypes.STRING,
     tenant: DataTypes.STRING,
     unionID: DataTypes.STRING,
-    admin: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+    permission: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
     }
 }, {
     sequelize: db,

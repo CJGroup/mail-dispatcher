@@ -36,3 +36,8 @@ export interface BookInfo {
 export interface FeishuLogin {
     code: string,
 }
+
+export interface PasswordLoginBody {
+    username: string,
+    password: string,
+}
