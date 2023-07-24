@@ -5,7 +5,6 @@ import {
   Request,
   Response,
 } from "express-serve-static-core";
-import qs from "qs";
 import { User } from "../db";
 import { expressjwt } from "express-jwt";
 import { JWT_SECRET, genToken } from "../utils";
@@ -57,8 +56,9 @@ export function initAuthentication(app: Express) {
       const user = await User.findOne({
         where: { openID: data.open_id, unionID: data.union_id },
       });
+      console.log(user);
       if (!user) {
-        User.create({
+        await User.create({
           name: data.name,
           openID: data.open_id,
           unionID: data.union_id,
@@ -90,12 +90,13 @@ export const authMiddleware: any[] = [
         unionID: req.auth.unionID,
       },
     });
+    const permission = user?.permission?user.permission:1;
     if (!user)
       res.status(401).json({
         code: 1,
         message: "Login needed!",
       });
-    else if (user.permission || 1 <= 2)
+    else if (permission < 2)
       res.status(403).json({
         code: 3,
         message: "You have no permission!",

@@ -38,4 +38,4 @@ Player.init(
   { sequelize: db }
 );
 
-Player.sync();
+Player.sync({ alter: true });
