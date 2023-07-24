@@ -48,7 +48,6 @@ export function initAuthentication(app: Express) {
           }
         )
       ).data.data;
-      console.log(data);
       if (data.tenant_key !== "172a7deb6e0a1758") {
         res.status(403).json({
           code: 35,
