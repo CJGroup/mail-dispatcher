@@ -6,9 +6,9 @@ import {
   Response,
 } from "express-serve-static-core";
 import qs from "qs";
-import jwt from "jsonwebtoken";
 import { User } from "../db";
 import { expressjwt } from "express-jwt";
+import { JWT_SECRET, genToken } from "../utils";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -51,19 +51,22 @@ export function initAuthentication(app: Express) {
           message: "Your account is not in the SakuraRealm Organization.",
         });
       }
+      const user = await User.findOne({
+        where: { openID: data.open_id, unionID: data.union_id }
+      });
+      if( !user ) {
+        User.create({
+          name: data.name,
+          openID: data.open_id,
+          unionID: data.union_id,
+          tenant: "172a7deb6e0a1758",
+          permission: 2,
+        })
+      }
       res.status(200).json({
         code: 0,
         message: "success",
-        token: jwt.sign(
-          {
-            openID: data.open_id,
-            unionID: data.union_id,
-          },
-          "SakuraRealm_Wuhen",
-          {
-            algorithm: "HS256",
-          }
-        ),
+        token: genToken(data.open_id, data.union_id),
       });
     } catch (e) {
       console.log(e);
@@ -76,7 +79,7 @@ export function initAuthentication(app: Express) {
 }
 
 export const authMiddleware: any[] = [
-  expressjwt({ secret: "SakuraRealm_Wuhen", algorithms: ["HS256"] }),
+  expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
   async function (req: Request, res: Response, next: NextFunction) {
     const user = await User.findOne({
       where: {
@@ -89,7 +92,7 @@ export const authMiddleware: any[] = [
         code: 1,
         message: "Login needed!",
       });
-    else if (!user.admin)
+    else if (user.permission || 1 <= 2)
       res.status(403).json({
         code: 3,
         message: "You have no permission!",

@@ -83,7 +83,9 @@ export function initListAPI(app: Express) {
     });
   });
 
-  app.get("/list/get", async (req, res) =>
+  app.get("/list/get",
+  ...authMiddleware,
+  async (req, res) =>
     res
       .status(200)
       .json({
@@ -125,7 +127,9 @@ export function initListAPI(app: Express) {
     }
   });
 
-  app.post("/list/remove", async (req, res) => {
+  app.post("/list/remove",
+  ...authMiddleware,
+  async (req, res) => {
     const body = req.body as ListAPIBody;
     try {
       const num = (await getList()).findIndex(
