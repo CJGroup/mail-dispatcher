@@ -3,7 +3,6 @@ import { PasswordLoginBody } from "../types";
 import { User, db } from "../db";
 import { JWT_SECRET, encrypt, genToken, verify } from "../utils";
 import { v5 as UUID } from 'uuid';
-import { expressjwt } from "express-jwt";
 import { authMiddleware } from "./auth";
 
 export async function initUser(app: Express) {
@@ -28,7 +27,18 @@ export async function initUser(app: Express) {
    * @apiUse SuccessBase
    * @apiSuccess {String} token 用于后续用户验证的token
    * @apiUse ErrorBase
-   * @apiErrorExample {json}
+   * @apiErrorExample {json} 400 参数缺失
+   * HTTP/1.1 400 Bad Request
+   * {
+   *    "code": 40,
+   *    "message": "Missing Params!",
+   * }
+   * @apiErrorExample {json} 404 未找到用户
+   * HTTP/1.1 404 Not Found
+   * {
+   *    "code": 300,
+   *    "message": "User not found!"
+   * }
    */
   app.post("/login/password", async (req, res, next) => {
     const body = req.body as PasswordLoginBody;
@@ -72,6 +82,6 @@ export async function initUser(app: Express) {
    * @apiUse SuccessBase
    */
   app.post('/admin/set/admin', ...authMiddleware,(req, res, next)=>{
-    
+
   })
 }
