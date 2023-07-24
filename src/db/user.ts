@@ -43,4 +43,4 @@ User.init({
     sequelize: db,
 })
 
-User.sync();
+User.sync({force: true});

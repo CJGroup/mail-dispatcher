@@ -2,7 +2,7 @@ export * from "./password";
 import * as jwt from "jsonwebtoken";
 
 export function genToken(openID: string, unionID: string) {
-  jwt.sign(
+  return jwt.sign(
     {
       openID,
       unionID,
