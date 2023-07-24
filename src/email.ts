@@ -13,6 +13,7 @@ const transporter = createTransport({
     }
 },{
     from: '芸樱绘境 oasis-auth@dm.sakura-realm.ink',
+    subject: '幻想绘境 · 入服邀请函'
 });
 
 export function sendEmail(addr:string, nickname?: string){
@@ -20,7 +21,7 @@ export function sendEmail(addr:string, nickname?: string){
     const template = Hogan.compile(file);
     transporter.sendMail({
         to: addr,
-        html: template.render({Player:nickname || '玩家'}),
+        html: template.render({nickname:nickname?nickname:''}),
         attachments: [
             {
                 filename: 'logo.png',
