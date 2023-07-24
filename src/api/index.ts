@@ -8,7 +8,7 @@ import { initSend } from "./send";
 export function initBackend() {
   const app = express();
 
-  app.use(morgan("common"));
+  app.use(morgan("dev"));
   app.use(express.json());
   app.use('/doc',express.static('./doc'));
 
@@ -20,7 +20,7 @@ export function initBackend() {
       next();
   });
 
-  app.get("/", (req, res) => res.redirect("/doc"));
+  app.get("/", (req, res) => res.redirect(""));
   initListAPI(app);
   initSend(app);
   initAuthentication(app);

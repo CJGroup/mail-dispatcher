@@ -15,4 +15,5 @@ if (!fs.existsSync(path)) fs.mkdirSync(path);
 export const db = new Sequelize({
   dialect: "sqlite",
   storage: fullpath,
+  logging: false,
 });

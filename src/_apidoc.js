@@ -70,7 +70,7 @@
  * @apiName Get List
  * @apiDescription 获取当前预约成员列表
  * @apiGroup 列表
- * @apiPermission admin
+ * @apiPermission 管理员
  * @apiUse SuccessBase
  * @apiSuccess {Object} data 数据对象
  * @apiSuccess {Number} data.count 当前总用户数
@@ -106,7 +106,7 @@
  * @apiName Post RemoveListNumber
  * @apiDescription 从列表中移除成员
  * @apiGroup 列表
- * @apiPermission admin
+ * @apiPermission 管理员
  * @apiBody {String} nickname 玩家昵称
  * @apiBody {String} mail 玩家邮件地址
  * @apiBody {String} [serverID] 服务器ID
@@ -119,7 +119,7 @@
  * @apiName Post SendEmail
  * @apiDescription 直接向目标邮箱发送邮件
  * @apiGroup 直接发送
- * @apiPermission admin
+ * @apiPermission 管理员
  * @apiBody {String} list.nickname 玩家昵称
  * @apiBody {String} list.mail 玩家邮件地址
  * @apiBody {String} [list.serverID] 服务器ID
@@ -130,6 +130,7 @@
  * @apiVersion 1.0.0
  * @apiName Post BatchSendEmail
  * @apiGroup 直接发送
+ * @apiPermission 管理员
  * @apiDescription 批量直接向目标邮箱中发送邮件
  * @apiBody {Object[]} list 批量发送的邮箱列表
  * @apiBody {String} list.nickname 玩家昵称

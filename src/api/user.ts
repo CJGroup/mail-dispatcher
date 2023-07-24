@@ -20,8 +20,10 @@ export async function initUser(app: Express) {
   /**
    * @api /login/password 使用密码登录
    * @apiName Post LoginWithPassword
-   * @apiDescription 使用传统的用户名+密码方式登录\n注意：内置超级管理员仅可通过此方式登录
+   * @apiDescription 使用传统的用户名+密码方式登录
+   * 注意：内置超级管理员仅可通过此方式登录
    * @apiGroup 登录
+   * @apiIgnore 暂时不可用
    * @apiBody {String} username 用户名
    * @apiBody {String} password 密码
    * @apiUse SuccessBase
@@ -74,9 +76,11 @@ export async function initUser(app: Express) {
 
   /**
    * @api {POST} /admin/set/admin 设置管理员
+   * @apiIgnore 该方法未完成
    * @apiName Post SetAdmin
    * @apiDescription 将用户设置为管理员
    * @apiGroup 用户管理
+   * @apiPermission 超级管理员
    * @apiBody {String} openID 指定用户的openID
    * @apiBody {String} unionID 指定用户的unionID
    * @apiUse SuccessBase
