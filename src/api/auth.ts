@@ -19,32 +19,35 @@ declare module "express-serve-static-core" {
 export function initAuthentication(app: Express) {
   app.post("/login/feishu", async (req, res) => {
     try {
-      const token = (
+      const access_token = (
         await axios.post(
-          "https://passport.feishu.cn/suite/passport/oauth/token",
-          qs.stringify({
+          "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal",
+          JSON.stringify({
+            app_id: "cli_a43ea6bb6bf8500e",
+            app_secret: "xhZWnq1Sc2ak8ylcQavRFhmMPtzJNVCa",
+          }),
+          {
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          }
+        )
+      ).data.app_access_token;
+      const data = (
+        await axios.post(
+          "https://open.feishu.cn/open-apis/authen/v1/access_token",
+          JSON.stringify({
             grant_type: "authorization_code",
-            client_id: "cli_a43ea6bb6bf8500e",
-            client_secret: "xhZWnq1Sc2ak8ylcQavRFhmMPtzJNVCa",
             code: req.body.code,
           }),
           {
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
+              Authorization: `Bearer ${access_token}`,
+              "Content-Type": "application/json; charset=utf-8",
             },
           }
         )
-      ).data.access_token;
-      const data = (
-        await axios.get(
-          "https://passport.feishu.cn/suite/passport/oauth/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-      ).data;
+      ).data.data;
       if (data.tenant_key !== "172a7deb6e0a1758") {
         res.status(403).json({
           code: 35,
@@ -52,16 +55,16 @@ export function initAuthentication(app: Express) {
         });
       }
       const user = await User.findOne({
-        where: { openID: data.open_id, unionID: data.union_id }
+        where: { openID: data.open_id, unionID: data.union_id },
       });
-      if( !user ) {
+      if (!user) {
         User.create({
           name: data.name,
           openID: data.open_id,
           unionID: data.union_id,
           tenant: "172a7deb6e0a1758",
           permission: 2,
-        })
+        });
       }
       res.status(200).json({
         code: 0,
