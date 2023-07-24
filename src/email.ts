@@ -20,7 +20,7 @@ export function sendEmail(addr:string, nickname?: string){
     const template = Hogan.compile(file);
     transporter.sendMail({
         to: addr,
-        html: template.render({Player:nickname?nickname:'玩家'}),
+        html: template.render({Player:nickname || '玩家'}),
         attachments: [
             {
                 filename: 'logo.png',

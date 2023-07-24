@@ -1,5 +1,4 @@
 import { Express } from "express-serve-static-core";
-import { expressjwt } from "express-jwt";
 
 import { BookInfo, ListAPIBody, ListBatchAPIBody } from "../types";
 import { addToList, getCount, getList, removeInList } from "../store";
