@@ -18,7 +18,7 @@ export function initBackend() {
   }));
   app.use('/doc',express.static('./doc'));
 
-  app.get("/", (req, res) => res.redirect("http://www.data07.cn/#/hxhj"));
+  app.get("/", (req, res) => res.redirect("http://www.data07.cn/#/server/hxhj"));
   initListAPI(app);
   initSend(app);
   initAuthentication(app);
