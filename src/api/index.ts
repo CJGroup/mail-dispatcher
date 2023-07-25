@@ -5,6 +5,7 @@ import cors from 'cors';
 import { initListAPI } from "./list";
 import { initAuthentication } from "./auth";
 import { initSend } from "./send";
+import Record from './record';
 
 
 export function initBackend() {
@@ -21,6 +22,7 @@ export function initBackend() {
   initListAPI(app);
   initSend(app);
   initAuthentication(app);
+  app.use('/record',Record);
 
   app.listen(80, () => {
     console.log("Start Listening on port 80!");
