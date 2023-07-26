@@ -10,6 +10,7 @@ export class Record extends Model<InferAttributes<Record>,InferCreationAttribute
     declare id?: number;
     declare nickname: string;
     declare mail: string;
+    declare time: Date;
 }
 
 Record.init({
@@ -24,6 +25,10 @@ Record.init({
     },
     mail: {
         type: DataTypes.STRING,
+        allowNull: false,
+    },
+    time: {
+        type: DataTypes.DATE,
         allowNull: false,
     }
 }, {

@@ -13,6 +13,7 @@ export function initSend(app: Express) {
     Record.create({
       nickname: body.nickname,
       mail: body.mail,
+      time: new Date(),
     });
     res.status(200).json({
       code: 0,
@@ -29,6 +30,7 @@ export function initSend(app: Express) {
       Record.create({
         nickname: player.nickname,
         mail: player.mail,
+        time: new Date(),
       });
     }
     res.status(200).json({
