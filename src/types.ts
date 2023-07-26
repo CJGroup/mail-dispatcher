@@ -41,3 +41,9 @@ export interface PasswordLoginBody {
     username: string,
     password: string,
 }
+
+export interface UserSettingBody {
+    openID: string,
+    unionID: string,
+    permission: number,
+}
