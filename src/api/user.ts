@@ -22,7 +22,6 @@ export async function initUser(app: Express) {
    * @apiDescription 使用传统的用户名+密码方式登录
    * 注意：内置超级管理员仅可通过此方式登录
    * @apiGroup 登录
-   * @apiIgnore 暂时不可用
    * @apiBody {String} username 用户名
    * @apiBody {String} password 密码
    * @apiUse SuccessBase
@@ -80,8 +79,7 @@ export async function initUser(app: Express) {
   });
 
   /**
-   * @api {POST} /admin/set/permission 设置用户权限
-   * @apiIgnore 该方法未完成
+   * @api {POST} /user/set/permission 设置用户权限
    * @apiName Post SetAdmin
    * @apiDescription 将用户设置为管理员
    * @apiGroup 用户管理
@@ -99,7 +97,7 @@ export async function initUser(app: Express) {
    * }
    */
   app.post(
-    "/user/set/admin",
+    "/user/set/permission",
     ...superAdminMiddleware,
     async (req, res, next) => {
       try {

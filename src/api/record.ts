@@ -17,16 +17,20 @@ router.use(...authMiddleware);
  * @apiSuccess {Object[]} list 获取的记录列表
  * @apiSuccess {String} list.nickname 记录中的玩家昵称
  * @apiSuccess {String} list.mail 记录中的邮箱地址
+ * @apiSuccess {String} list.time 记录中的时间
  * @apiUse ErrorBase
  */
 router.get("/get", async (req, res, next) => {
   try {
-    const rlist = await Record.findAll();
+    const rlist = await Record.findAll({
+      order: [["id","DESC"]],
+    });
     const list = [];
     for (const rec of rlist) {
       list.push({
         nickname: rec.nickname,
         mail: rec.mail,
+        time: rec.time.toISOString(),
       });
     }
     res.status(200).json({

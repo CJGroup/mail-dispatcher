@@ -21,7 +21,7 @@ export function initListAPI(app: Express) {
       });
       return;
     }
-    addToList({
+    await addToList({
       nickname: body.nickname,
       mail: body.mail,
       serverID: body.serverID,
