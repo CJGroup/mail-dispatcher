@@ -1,6 +1,9 @@
 name: CODING.net代码同步
 on:
     push
+env:
+    CODING_USERNAME: ${{ secrets.CODING_USERNAME }}
+    CODING_TOKEN: ${{ secrets.CODING_TOKEN }}
 jobs:
     sync:
         name: 向CODING.net推送代码
@@ -9,6 +12,8 @@ jobs:
             - name: 检出代码
               uses: actions/checkout@main
             - name: 向CODING推送
-              uses: yesolutions/mirror-action@v0.7.0
-              with:
-                REMOTE: https://${{ secrets.CODING_USERNAME }}:${{ secrets.CODING_TOKEN }}@e.coding.net/sakurarealm/sakurasite/backend-api.git
+              run: |
+                git remote add origin https://$CODING_USERNAME:$CODING_TOKEN@e.coding.net/sakurarealm/sakurasite/backend-api.git
+                git branch -r | grep -v '->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done
+                git fetch --all
+                git pull --all
