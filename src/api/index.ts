@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from 'cors';
 
-import { initListAPI } from "./list";
+import List from "./list";
 import { initAuthentication } from "./auth";
 import { initSend } from "./send";
 import Record from './record';
@@ -19,7 +19,7 @@ export function initBackend() {
   app.use('/doc',express.static('./doc'));
 
   app.get("/", (req, res) => res.redirect("http://www.data07.cn/#/server/hxhj"));
-  initListAPI(app);
+  app.use('/list', List);
   initSend(app);
   initAuthentication(app);
   app.use('/record',Record);
