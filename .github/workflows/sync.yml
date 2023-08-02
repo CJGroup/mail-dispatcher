@@ -11,6 +11,4 @@ jobs:
             - name: 向CODING推送
               uses: yesolutions/mirror-action@v0.7.0
               with:
-                REMOTE: https://e.coding.net/sakurarealm/sakurasite/backend-api.git
-                GIT_USERNAME: ${{ secrets.CODING_USERNAME }}
-                GIT_PASSWORD: ${{ secrets.CODING_TOKEN }}
+                REMOTE: https://${{ secrets.CODING_USERNAME }}:${{ secrets.CODING_TOKEN }}@e.coding.net/sakurarealm/sakurasite/backend-api.git
