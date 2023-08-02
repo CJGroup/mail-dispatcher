@@ -1,0 +1,17 @@
+name: CODING.net代码同步
+on:
+    push
+env:
+    CODING_USERNAME: ${{ secrets.CODING_USERNAME }}
+    CODING_TOKEN: ${{ secrets.CODING_TOKEN }}
+jobs:
+    sync:
+        name: 向CODING.net推送代码
+        runs-on: ubuntu-latest
+        steps:
+            - name: 检出代码
+              uses: actions/checkout@main
+            - name: 从CODING获取数据
+              run: git fetch https://$CODING_USERNAME:$CODING_TOKEN@e.coding.net/sakurarealm/sakurasite/backend-api.git
+            - name: 向CODING推送
+              run: git push --all https://$CODING_USERNAME:$CODING_TOKEN@e.coding.net/sakurarealm/sakurasite/backend-api.git
