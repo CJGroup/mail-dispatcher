@@ -3,10 +3,10 @@ import e from "express";
 import axios from "axios";
 
 import { PasswordLoginBody, UserSettingBody } from "../types";
-import { User, db } from "../db";
-import { JWT_SECRET, encrypt, genToken, verify } from "../utils";
+import { User } from "../db";
+import { encrypt, genToken, verify } from "../utils";
 import { v5 as UUID } from "uuid";
-import { authMiddleware, superAdminMiddleware } from "./auth";
+import { superAdminMiddleware } from "./auth";
 
 const router = e.Router();
 
@@ -67,7 +67,6 @@ router.post("/login/feishu", async (req, res) => {
     const user = await User.findOne({
       where: { openID: data.open_id, unionID: data.union_id },
     });
-    console.log(user);
     if (!user) {
       await User.create({
         name: data.name,

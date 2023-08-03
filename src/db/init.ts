@@ -19,4 +19,5 @@ export const db = new Sequelize({
   database: 'mail',
   username: 'mail',
   password: 'SakuraMail',
+  logging: false,
 });
