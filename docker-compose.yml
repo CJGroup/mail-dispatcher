@@ -9,13 +9,11 @@ services:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     volumes:
-      - E:\mail\mysql:/var/lib/mysql:rw
+      - /home/constasj/mail:/var/lib/mysql:rw
     environment:
       - MYSQL_USER=mail
       - MYSQL_PASSWORD=SakuraMail
       - MYSQL_DATABASE=mail
-    ports:
-      - "3306:3306"
 
 volumes:
   mail:
