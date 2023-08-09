@@ -4,9 +4,10 @@ import axios from "axios";
 
 import { PasswordLoginBody, UserSettingBody } from "../types";
 import { User } from "../db";
-import { encrypt, genToken, verify } from "../utils";
+import { JWT_SECRET, encrypt, genToken, verify } from "../utils";
 import { v5 as UUID } from "uuid";
 import { superAdminMiddleware } from "./auth";
+import { expressjwt } from "express-jwt";
 
 const router = e.Router();
 
@@ -206,29 +207,26 @@ router.post(
 );
 
 /**
- * @api {GET} /user/get 获取用户列表
+ * @api {GET} /user/list/get 获取用户列表
  * @apiName Get UserList
  * @apiDescription 获取当前系统内已经注册的所有用户的信息
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
+ * @apiVersion 1.1.0
  * @apiUse SuccessBase
  * @apiSuccess {Object[]} list 获取的用户列表
- * @apiSuccess {String} list.name 用户名
  * @apiSuccess {String} list.openID 用户的OpenID(不应该展示)
  * @apiSuccess {String} list.unionID 用户的UnionID(不应该展示)
- * @apiSuccess {String} list.permission 用户的权限等级（1为普通用户，2为管理员，3为超级管理员）
  * @apiUse ErrorBase
  */
-router.get("/get", ...superAdminMiddleware, async (req, res, next) => {
+router.get("/list/get", ...superAdminMiddleware, async (req, res, next) => {
   try {
     const users = await User.findAll();
     const list = [];
     for (const user of users)
       list.push({
-        name: user.name,
         openID: user.openID,
         unionID: user.unionID,
-        permission: user.permission,
       });
     res.status(200).json({
       code: 0,
@@ -242,6 +240,42 @@ router.get("/get", ...superAdminMiddleware, async (req, res, next) => {
     });
     next(e);
   }
+});
+
+/**
+ * @api {GET} /user/info/self 获取用户本人信息
+ * @apiName Get UserSelfInfo
+ * @apiDescription 获取当前登录用户的基本信息
+ * @apiGroup 用户管理
+ * @apiPermission 登录用户名
+ * @apiUse SuccessBase
+ * @apiSuccess {Object} data 当前用户信息
+ * @apiSuccess {String} data.name 用户名
+ * @apiSuccess {String} data.permission 用户的权限等级（1为普通用户，2为管理员，3为超级管理员）
+ * @apiUse ErrorBase
+ */
+router.get("/info/self", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }), async (req, res, next) => {
+  const user = await User.findOne({
+    where:{
+      openID: req.auth.openID,
+      unionID: req.auth.unionID,
+    }
+  });
+  if(!user) {
+    res.status(404).json({
+      code: 40,
+      message: 'User not found!',
+    });
+    return next(new ReferenceError('User Not Found!'));
+  }
+  res.status(200).json({
+    code:0,
+    message: 'success',
+    data: {
+      name: user.name,
+      permission: user.permission,
+    }
+  })
 });
 
 export async function initUser() {
