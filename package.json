@@ -10,7 +10,8 @@
     "build": "rollup -c",
     "start": "node lib/index.js",
     "start:dev": "npm run doc && ts-node src/index.ts",
-    "doc": "apidoc -i src/ -o doc/"
+    "doc": "apidoc -i src/ -o doc/",
+    "release": "semantic-release"
   },
   "keywords": [],
   "author": "ConstasJ <constasj@qq.com>",
