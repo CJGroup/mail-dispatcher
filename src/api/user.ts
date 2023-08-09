@@ -244,7 +244,7 @@ router.get("/get", ...superAdminMiddleware, async (req, res, next) => {
   }
 });
 
-export async function initUser(app: Express) {
+export async function initUser() {
   const users = await User.findAll({
     where: { name: "admin", permission: 3 },
   });

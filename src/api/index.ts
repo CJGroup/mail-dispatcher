@@ -5,10 +5,10 @@ import cors from 'cors';
 import List from "./list";
 import Send from "./send";
 import Record from './record';
-import User from './user';
+import User, { initUser } from './user';
 
 
-export function initBackend() {
+export async function initBackend() {
   const app = express();
 
   app.use(morgan("dev"));
@@ -20,8 +20,9 @@ export function initBackend() {
 
   app.get("/", (req, res) => res.redirect("http://www.data07.cn/#/server/hxhj"));
   app.use('/list', List);
-  app.use('/send', Send)
-  app.use('/user', User)
+  app.use('/send', Send);
+  app.use('/user', User);
+  await initUser();
   app.use('/record',Record);
 
   app.listen(80, () => {
