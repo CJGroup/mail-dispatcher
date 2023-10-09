@@ -97,6 +97,7 @@ router.post("/login/feishu", async (req, res) => {
  * @apiDescription 使用传统的用户名+密码方式登录
  * 注意：内置超级管理员仅可通过此方式登录
  * @apiGroup 登录
+ * @apiVersion 1.0.0
  * @apiBody {String} username 用户名
  * @apiBody {String} password 密码
  * @apiUse SuccessBase
@@ -156,9 +157,10 @@ router.post("/login/password", async (req, res, next) => {
 /**
  * @api {POST} /user/set/permission 设置用户权限
  * @apiName Post SetAdmin
- * @apiDescription 将用户设置为管理员
+ * @apiDescription 设置用户的权限等级
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
+ * @apiVersion 1.0.0
  * @apiBody {String} openID 指定用户的openID
  * @apiBody {String} unionID 指定用户的unionID
  * @apiBody {Number} permission 用户权限等级
@@ -247,7 +249,7 @@ router.get("/list/get", ...superAdminMiddleware, async (req, res, next) => {
  * @apiName Get UserSelfInfo
  * @apiDescription 获取当前登录用户的基本信息
  * @apiGroup 用户管理
- * @apiPermission 登录用户名
+ * @apiPermission 登录用户
  * @apiUse SuccessBase
  * @apiSuccess {Object} data 当前用户信息
  * @apiSuccess {String} data.name 用户名
@@ -277,6 +279,48 @@ router.get("/info/self", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] 
     }
   })
 });
+
+/**
+ * @api {POST} /user/info/set 设置用户信息
+ * @apiName Post SetUserInfo
+ * @apiDescription 设置当前登录用户的基本信息
+ * @apiGroup 用户管理
+ * @apiPermission 登录用户
+ * @apiVersion 1.0.0
+ * @apiBody {Object} data 用户信息
+ * @apiBody [String] data.name 用户名
+ * @apiUse SuccessBase
+ * @apiUse ErrorBase
+ */
+router.post("/info/set", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }), async (req, res, next) => {
+  try{
+    const user = await User.findOne({
+      where:{
+        openID: req.auth.openID,
+        unionID: req.auth.unionID,
+      }
+    });
+    if(!user) {
+      res.status(404).json({
+        code: 40,
+        message: 'User not found!',
+      });
+      return next(new ReferenceError('User Not Found!'));
+    }
+    if(req.body.data.name) user.name = req.body.data.name;
+    await user.save();
+    res.status(200).json({
+      code:0,
+      message: 'success',
+    });
+  } catch(e) {
+    res.status(500).json({
+      code:1,
+      message: 'Internal Server Error!',
+    });
+    return next(e);
+  }
+})
 
 export async function initUser() {
   const users = await User.findAll({
