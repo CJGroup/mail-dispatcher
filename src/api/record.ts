@@ -10,7 +10,7 @@ router.use(...authMiddleware);
  * @api {GET} /record/get 获取邮件发送记录
  * @apiName Get GetSendRecords
  * @apiDescription 获取通过/send系列API发送邮件的记录
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiGroup 发送记录
  * @apiPermission 管理员
  * @apiUse SuccessBase
