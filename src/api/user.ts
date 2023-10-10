@@ -1,14 +1,60 @@
 import e from "express";
 import axios from "axios";
 
-import { PasswordLoginBody, UserSettingBody } from "../types";
-import { User } from "../db";
+import { PasswordLoginBody, UserSettingBody, User as UserInterface } from "../types";
 import { JWT_SECRET, encrypt, genToken, verify } from "../utils";
 import { v5 as UUID } from "uuid";
 import { superAdminMiddleware } from "./auth";
 import { expressjwt } from "express-jwt";
+import { User } from "../db";
 
 const router = e.Router();
+
+/**
+ * @api {POST} /user/register 注册用户
+ * @apiName Post Register
+ * @apiDescription 注册新用户
+ * @apiGroup 登录
+ * @apiVersion 2.4.0
+ * @apiBody {Object} data 用户信息
+ * @apiBody {String} data.name 用户名
+ * @apiBody {String} data.password 密码
+ * @apiUse SuccessBase
+ * @apiUse ErrorBase
+ */
+router.post("/register", async (req, res, next) => {
+  try {
+    const body = req.body as UserInterface;
+    const user = await User.findOne({
+      where: {
+        name: body.name,
+      },
+    });
+    if (user) {
+      res.status(403).json({
+        code: 30,
+        message: "User already exists!",
+      });
+      return next(new Error("User already exists!"));
+    }
+    await User.create({
+      name: body.name,
+      password: encrypt(body.password),
+      openID: UUID(body.name, UUID.DNS),
+      unionID: UUID(body.name, UUID.DNS),
+      permission: 1,
+    });
+    res.status(200).json({
+      code: 0,
+      message: "success",
+    });
+  } catch (e) {
+    res.status(500).json({
+      code: 50,
+      message: e,
+    });
+  }
+});
 
 /**
  * @api {POST} /user/login/feishu 飞书OAuth验证

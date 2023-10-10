@@ -14,7 +14,7 @@ export interface ListSendBody {
     number: number,
 }
 
-export interface User {
+export interface Player {
     id: number,
     nickname: string,
     mail: string,
@@ -25,7 +25,7 @@ export interface User {
 export interface Store {
     count: number,
     idl: number
-    list: User[],
+    list: Player[],
 }
 
 export interface BookInfo {
@@ -46,4 +46,9 @@ export interface UserSettingBody {
     openID: string,
     unionID: string,
     permission: number,
+}
+
+export interface User extends UserSettingBody {
+    name: string,
+    password: string,
 }
