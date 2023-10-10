@@ -285,6 +285,54 @@ router.get(
 );
 
 /**
+ * @api {GET} /user/info/get 获取指定用户信息
+ * @apiName Get UserInfo
+ * @apiDescription 获取指定用户的基本信息
+ * @apiGroup 用户管理
+ * @apiPermission 超级管理员
+ * @apiVersion 1.0.0
+ * @apiBody {Object} data 数据对象
+ * @apiBody {String} data.openID 指定用户的openID
+ * @apiBody {String} data.unionID 指定用户的unionID
+ * @apiUse SuccessBase
+ * @apiSuccess {Object} data 当前用户信息
+ * @apiSuccess {String} data.name 用户名
+ * @apiSuccess {String} data.permission 用户的权限等级（1为普通用户，2为管理员，3为超级管理员）
+ * @apiUse ErrorBase
+ */
+router.get("/info/get", ...superAdminMiddleware, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        openID: req.body.data.openID,
+        unionID: req.body.data.unionID,
+      },
+    });
+    if (!user) {
+      res.status(404).json({
+        code: 40,
+        message: "User not found!",
+      });
+      return next(new ReferenceError("User Not Found!"));
+    }
+    res.status(200).json({
+      code: 0,
+      message: "success",
+      data: {
+        name: user.name,
+        permission: user.permission,
+      },
+    });
+  } catch (e) {
+    res.status(500).json({
+      code: 1,
+      message: "Internal Server Error!",
+    });
+    return next(e);
+  }
+});
+
+/**
  * @api {POST} /user/info/set 设置用户信息
  * @apiName Post SetUserInfo
  * @apiDescription 设置当前登录用户的基本信息
