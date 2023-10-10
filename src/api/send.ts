@@ -2,7 +2,7 @@ import e from "express";
 
 import { ListAPIBody, ListBatchAPIBody } from "../types";
 import { sendEmail } from "../email";
-import { authMiddleware } from "./auth";
+import { adminMiddleware } from "../utils/auth";
 import { Record } from "../db";
 
 const router = e.Router();
@@ -19,7 +19,7 @@ const router = e.Router();
  * @apiBody {String} [list.serverID] 服务器ID
  * @apiUse SuccessBase
  */
-router.post("/", ...authMiddleware, (req, res) => {
+router.post("/", ...adminMiddleware, (req, res) => {
   const body = req.body as ListAPIBody;
   sendEmail(body.mail, body.nickname);
   Record.create({
@@ -46,7 +46,7 @@ router.post("/", ...authMiddleware, (req, res) => {
  * @apiBody {String} [list.serverID] 服务器ID
  * @apiUse SuccessBase
  */
-router.post("/batch", ...authMiddleware, (req, res) => {
+router.post("/batch", ...adminMiddleware, (req, res) => {
   const body = req.body as ListBatchAPIBody;
   for (const player of body.list) {
     sendEmail(player.mail, player.nickname);

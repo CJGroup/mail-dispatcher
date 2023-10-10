@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { authMiddleware } from "./auth";
+import { adminMiddleware } from "../utils/auth";
 import { Record } from "../db";
 
 const router = Router();
 
-router.use(...authMiddleware);
+router.use(...adminMiddleware);
 
 /**
  * @api {GET} /record/get 获取邮件发送记录

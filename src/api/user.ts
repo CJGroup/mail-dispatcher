@@ -4,7 +4,7 @@ import axios from "axios";
 import { PasswordLoginBody, UserSettingBody, User as UserInterface } from "../types";
 import { JWT_SECRET, encrypt, genToken, verify } from "../utils";
 import { v5 as UUID } from "uuid";
-import { superAdminMiddleware } from "./auth";
+import { superAdminMiddleware } from "../utils/auth";
 import { expressjwt } from "express-jwt";
 import { User } from "../db";
 

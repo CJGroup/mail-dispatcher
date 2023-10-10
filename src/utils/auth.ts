@@ -5,7 +5,7 @@ import {
 } from "express-serve-static-core";
 import { User } from "../db";
 import { expressjwt } from "express-jwt";
-import { JWT_SECRET, genToken } from "../utils";
+import { JWT_SECRET, genToken } from ".";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -13,7 +13,7 @@ declare module "express-serve-static-core" {
   }
 }
 
-export const authMiddleware: any[] = [
+export const adminMiddleware: any[] = [
   expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
   async function (req: Request, res: Response, next: NextFunction) {
     const user = await User.findOne({

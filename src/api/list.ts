@@ -2,7 +2,7 @@ import e from "express";
 
 import { BookInfo, ListAPIBody, ListBatchAPIBody } from "../types";
 import { addToList, getCount, getList, removeInList } from "../store";
-import { authMiddleware } from "./auth";
+import { adminMiddleware } from "../utils/auth";
 
 const router = e.Router();
 
@@ -155,7 +155,7 @@ router.post("/add/batch", async (req, res) => {
  * @apiBody {String} [data.list.serverID] 服务器ID
  */
 
-router.get("/get", ...authMiddleware, async (req, res) =>
+router.get("/get", ...adminMiddleware, async (req, res) =>
   res
     .status(200)
     .json({
@@ -231,7 +231,7 @@ router.get("/get/self", async (req, res) => {
  * @apiUse ErrorBase
  * @apiUse SuccessBase
  */
-router.post("/remove", ...authMiddleware, async (req, res) => {
+router.post("/remove", ...adminMiddleware, async (req, res) => {
   const body = req.body as ListAPIBody;
   try {
     const num = (await getList()).findIndex(
