@@ -472,15 +472,15 @@ router.get("/cancel", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
 });
 
 /**
- * @api {GET} /user/delete 删除指定用户
- * @apiName Get DeleteUser
+ * @api {POST} /user/delete 删除指定用户
+ * @apiName Post DeleteUser
  * @apiDescription 删除指定用户
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
  * @apiVersion 1.0.0
- * @apiParam {Object} data 数据对象
- * @apiParam {String} data.openID 指定用户的openID
- * @apiParam {String} data.unionID 指定用户的unionID
+ * @apiBody {Object} data 数据对象
+ * @apiBody {String} data.openID 指定用户的openID
+ * @apiBody {String} data.unionID 指定用户的unionID
  * @apiUse SuccessBase
  * @apiUse ErrorBase
  */
