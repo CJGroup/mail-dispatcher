@@ -256,29 +256,33 @@ router.get("/list/get", ...superAdminMiddleware, async (req, res, next) => {
  * @apiSuccess {String} data.permission 用户的权限等级（1为普通用户，2为管理员，3为超级管理员）
  * @apiUse ErrorBase
  */
-router.get("/info/self", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }), async (req, res, next) => {
-  const user = await User.findOne({
-    where:{
-      openID: req.auth.openID,
-      unionID: req.auth.unionID,
-    }
-  });
-  if(!user) {
-    res.status(404).json({
-      code: 40,
-      message: 'User not found!',
+router.get(
+  "/info/self",
+  expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
+  async (req, res, next) => {
+    const user = await User.findOne({
+      where: {
+        openID: req.auth.openID,
+        unionID: req.auth.unionID,
+      },
     });
-    return next(new ReferenceError('User Not Found!'));
-  }
-  res.status(200).json({
-    code:0,
-    message: 'success',
-    data: {
-      name: user.name,
-      permission: user.permission,
+    if (!user) {
+      res.status(404).json({
+        code: 40,
+        message: "User not found!",
+      });
+      return next(new ReferenceError("User Not Found!"));
     }
-  })
-});
+    res.status(200).json({
+      code: 0,
+      message: "success",
+      data: {
+        name: user.name,
+        permission: user.permission,
+      },
+    });
+  }
+);
 
 /**
  * @api {POST} /user/info/set 设置用户信息
@@ -292,35 +296,222 @@ router.get("/info/self", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] 
  * @apiUse SuccessBase
  * @apiUse ErrorBase
  */
-router.post("/info/set", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }), async (req, res, next) => {
-  try{
+router.post(
+  "/info/set",
+  expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
+  async (req, res, next) => {
+    try {
+      const user = await User.findOne({
+        where: {
+          openID: req.auth.openID,
+          unionID: req.auth.unionID,
+        },
+      });
+      if (!user) {
+        res.status(404).json({
+          code: 40,
+          message: "User not found!",
+        });
+        return next(new ReferenceError("User Not Found!"));
+      }
+      if (req.body.data.name) user.name = req.body.data.name;
+      await user.save();
+      res.status(200).json({
+        code: 0,
+        message: "success",
+      });
+    } catch (e) {
+      res.status(500).json({
+        code: 1,
+        message: "Internal Server Error!",
+      });
+      return next(e);
+    }
+  }
+);
+
+/**
+ * @api {POST} /user/password/self 修改当前用户密码
+ * @apiName Post ChangePassword
+ * @apiDescription 修改当前登录用户的密码
+ * @apiGroup 用户管理
+ * @apiPermission 登录用户
+ * @apiVersion 1.0.0
+ * @apiBody {Object} data 用户信息
+ * @apiBody {String} data.oldPassword 旧密码
+ * @apiBody {String} data.newPassword 新密码
+ * @apiUse SuccessBase
+ * @apiUse ErrorBase
+ */
+router.post(
+  "/password/self",
+  expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
+  async (req, res, next) => {
+    try {
+      const user = await User.findOne({
+        where: {
+          openID: req.auth.openID,
+          unionID: req.auth.unionID,
+        },
+      });
+      if (!user) {
+        res.status(404).json({
+          code: 40,
+          message: "User not found!",
+        });
+        return next(new ReferenceError("User Not Found!"));
+      }
+      if (!verify(req.body.data.oldPassword, user.password || "")) {
+        res.status(403).json({
+          code: 30,
+          message: "Wrong Password!",
+        });
+        return next(new Error("Wrong Password!"));
+      }
+      user.password = encrypt(req.body.data.newPassword);
+      await user.save();
+      res.status(200).json({
+        code: 0,
+        message: "success",
+      });
+    } catch (e) {
+      res.status(500).json({
+        code: 1,
+        message: "Internal Server Error!",
+      });
+      return next(e);
+    }
+  }
+);
+
+/**
+ * @api {POST} /user/password/set 设置用户密码
+ * @apiName Post SetPassword
+ * @apiDescription 设置指定用户的密码
+ * @apiGroup 用户管理
+ * @apiPermission 超级管理员
+ * @apiVersion 1.0.0
+ * @apiBody {Object} data 用户信息
+ * @apiBody {String} data.openID 指定用户的openID
+ * @apiBody {String} data.unionID 指定用户的unionID
+ * @apiBody {String} data.password 新密码
+ * @apiUse SuccessBase
+ * @apiUse ErrorBase
+ */
+router.post(
+  "/password/set",
+  ...superAdminMiddleware,
+  async (req, res, next) => {
+    try {
+      const user = await User.findOne({
+        where: {
+          openID: req.body.data.openID,
+          unionID: req.body.data.unionID,
+        },
+      });
+      if (!user) {
+        res.status(404).json({
+          code: 40,
+          message: "User not found!",
+        });
+        return next(new ReferenceError("User Not Found!"));
+      }
+      user.password = encrypt(req.body.data.password);
+      await user.save();
+      res.status(200).json({
+        code: 0,
+        message: "success",
+      });
+    } catch (e) {
+      res.status(500).json({
+        code: 1,
+        message: "Internal Server Error!",
+      });
+      return next(e);
+    }
+  }
+);
+
+/**
+ * @api {GET} /user/cancel 注销当前用户
+ * @apiName Get CancelUser
+ * @apiDescription 注销当前登录用户
+ * @apiGroup 用户管理
+ * @apiPermission 登录用户
+ * @apiVersion 1.0.0
+ * @apiUse SuccessBase
+ * @apiUse ErrorBase
+ */
+router.get("/cancel", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }), async (req, res, next) => {
+  try {
     const user = await User.findOne({
-      where:{
+      where: {
         openID: req.auth.openID,
         unionID: req.auth.unionID,
-      }
+      },
     });
-    if(!user) {
+    if (!user) {
       res.status(404).json({
         code: 40,
-        message: 'User not found!',
+        message: "User not found!",
       });
-      return next(new ReferenceError('User Not Found!'));
+      return next(new ReferenceError("User Not Found!"));
     }
-    if(req.body.data.name) user.name = req.body.data.name;
-    await user.save();
+    await user.destroy();
     res.status(200).json({
-      code:0,
-      message: 'success',
+      code: 0,
+      message: "success",
     });
   } catch(e) {
     res.status(500).json({
-      code:1,
-      message: 'Internal Server Error!',
+      code: 1,
+      message: "Internal Server Error!",
     });
     return next(e);
   }
-})
+});
+
+/**
+ * @api {GET} /user/delete 删除指定用户
+ * @apiName Get DeleteUser
+ * @apiDescription 删除指定用户
+ * @apiGroup 用户管理
+ * @apiPermission 超级管理员
+ * @apiVersion 1.0.0
+ * @apiParam {Object} data 数据对象
+ * @apiParam {String} data.openID 指定用户的openID
+ * @apiParam {String} data.unionID 指定用户的unionID
+ * @apiUse SuccessBase
+ * @apiUse ErrorBase
+ */
+router.get("/delete", ...superAdminMiddleware, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        openID: req.body.data.openID,
+        unionID: req.body.data.unionID,
+      },
+    });
+    if (!user) {
+      res.status(404).json({
+        code: 40,
+        message: "User not found!",
+      });
+      return next(new ReferenceError("User Not Found!"));
+    }
+    await user.destroy();
+    res.status(200).json({
+      code: 0,
+      message: "success",
+    });
+  } catch (e) {
+    res.status(500).json({
+      code: 1,
+      message: "Internal Server Error!",
+    });
+    return next(e);
+  }
+});
 
 export async function initUser() {
   const users = await User.findAll({
