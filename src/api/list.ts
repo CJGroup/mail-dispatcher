@@ -8,7 +8,7 @@ const router = e.Router();
 
 /**
  * @api {POST} /list/add 增加新成员
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Post AddMemberToList
  * @apiGroup 列表
  * @apiDescription 向列表中新增加成员
@@ -69,7 +69,7 @@ router.post("/add", async (req, res) => {
 
 /**
  * @api {POST} /list/add/batch 批量添加
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Post BatchAdd
  * @apiGroup 列表
  * @apiDescription 向列表中批量添加成员
@@ -141,7 +141,7 @@ router.post("/add/batch", async (req, res) => {
 
 /**
  * @api {GET} /list/get 获取列表
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Get List
  * @apiDescription 获取当前预约成员列表
  * @apiGroup 列表
@@ -171,7 +171,7 @@ router.get("/get", ...authMiddleware, async (req, res) =>
 
 /**
  * @api {GET} /list/get/self 获取预约信息
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Get SelfPositionInList
  * @apiDescription 获取提供的用户在列表中的位置
  * @apiGroup 列表
@@ -220,7 +220,7 @@ router.get("/get/self", async (req, res) => {
 
 /**
  * @api {POST} /list/remove 移除成员
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Post RemoveListNumber
  * @apiDescription 从列表中移除成员
  * @apiGroup 列表

@@ -14,7 +14,7 @@ const router = e.Router();
 /**
  * @api {POST} /user/login/feishu 飞书OAuth验证
  * @apiName Post FeishuOauth
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiGroup 登录
  * @apiDescription 飞书验证页面获取code后通过此API登录
  * @apiBody {String} code 飞书OAuth获取的code
@@ -97,7 +97,7 @@ router.post("/login/feishu", async (req, res) => {
  * @apiDescription 使用传统的用户名+密码方式登录
  * 注意：内置超级管理员仅可通过此方式登录
  * @apiGroup 登录
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {String} username 用户名
  * @apiBody {String} password 密码
  * @apiUse SuccessBase
@@ -160,7 +160,7 @@ router.post("/login/password", async (req, res, next) => {
  * @apiDescription 设置用户的权限等级
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {String} openID 指定用户的openID
  * @apiBody {String} unionID 指定用户的unionID
  * @apiBody {Number} permission 用户权限等级
@@ -214,7 +214,7 @@ router.post(
  * @apiDescription 获取当前系统内已经注册的所有用户的信息
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
- * @apiVersion 1.1.0
+ * @apiVersion 2.4.0
  * @apiUse SuccessBase
  * @apiSuccess {Object[]} list 获取的用户列表
  * @apiSuccess {String} list.openID 用户的OpenID(不应该展示)
@@ -290,7 +290,7 @@ router.get(
  * @apiDescription 获取指定用户的基本信息
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {Object} data 数据对象
  * @apiBody {String} data.openID 指定用户的openID
  * @apiBody {String} data.unionID 指定用户的unionID
@@ -338,7 +338,7 @@ router.get("/info/get", ...superAdminMiddleware, async (req, res, next) => {
  * @apiDescription 设置当前登录用户的基本信息
  * @apiGroup 用户管理
  * @apiPermission 登录用户
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {Object} data 用户信息
  * @apiBody [String] data.name 用户名
  * @apiUse SuccessBase
@@ -384,7 +384,7 @@ router.post(
  * @apiDescription 修改当前登录用户的密码
  * @apiGroup 用户管理
  * @apiPermission 登录用户
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {Object} data 用户信息
  * @apiBody {String} data.oldPassword 旧密码
  * @apiBody {String} data.newPassword 新密码
@@ -438,7 +438,7 @@ router.post(
  * @apiDescription 设置指定用户的密码
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {Object} data 用户信息
  * @apiBody {String} data.openID 指定用户的openID
  * @apiBody {String} data.unionID 指定用户的unionID
@@ -486,7 +486,7 @@ router.post(
  * @apiDescription 注销当前登录用户
  * @apiGroup 用户管理
  * @apiPermission 登录用户
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiUse SuccessBase
  * @apiUse ErrorBase
  */
@@ -525,7 +525,7 @@ router.get("/cancel", expressjwt({ secret: JWT_SECRET, algorithms: ["HS256"] }),
  * @apiDescription 删除指定用户
  * @apiGroup 用户管理
  * @apiPermission 超级管理员
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiBody {Object} data 数据对象
  * @apiBody {String} data.openID 指定用户的openID
  * @apiBody {String} data.unionID 指定用户的unionID

@@ -9,7 +9,7 @@ const router = e.Router();
 
 /**
  * @api {POST} /send 直接发送邮件
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Post SendEmail
  * @apiDescription 直接向目标邮箱发送邮件
  * @apiGroup 直接发送
@@ -35,7 +35,7 @@ router.post("/", ...authMiddleware, (req, res) => {
 
 /**
  * @api {POST} /send/batch 直接批量发送邮件
- * @apiVersion 1.0.0
+ * @apiVersion 2.4.0
  * @apiName Post BatchSendEmail
  * @apiGroup 直接发送
  * @apiPermission 管理员
