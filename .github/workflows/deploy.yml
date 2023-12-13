@@ -33,3 +33,5 @@ jobs:
         with:
           url: https://43.248.189.10:9443/api/stacks/webhooks/765bf92d-6fa0-49c9-bb6d-552d172de83e
           method: POST
+          timeout: 500000
+          preventFailureOnNoResponse: true
