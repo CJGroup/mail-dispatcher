@@ -1,3 +1,4 @@
+name: Deploy
 on:
   push:
     branches:
@@ -22,7 +23,11 @@ jobs:
           context: .
           push: true
           tags: sakurarealm-docker.pkg.coding.net/sakurasite/major/saku-mail:latest
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
+  deploy:
+    needs: build-image
+    runs-on: ubuntu-latest
+    steps:
       - name: Trigger Webhook
         uses: fjogeleit/http-request-action@v1
         with:
