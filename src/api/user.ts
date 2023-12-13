@@ -295,6 +295,7 @@ router.get("/list/get", ...superAdminMiddleware, async (req, res, next) => {
  * @apiDescription 获取当前登录用户的基本信息
  * @apiGroup 用户管理
  * @apiPermission 登录用户
+ * @apiVersion 2.4.0
  * @apiUse SuccessBase
  * @apiSuccess {Object} data 当前用户信息
  * @apiSuccess {String} data.name 用户名
