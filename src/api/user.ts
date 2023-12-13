@@ -613,6 +613,8 @@ export async function initUser() {
   if (users.findIndex((val) => verify("SakuraMail", val.password || "")) === -1)
     User.create({
       name: "admin",
+      openID: UUID("admin", UUID.DNS),
+      unionID: UUID("admin", UUID.DNS),
       password: encrypt("SakuraMail"),
       permission: 3,
     });
