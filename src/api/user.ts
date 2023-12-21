@@ -24,10 +24,10 @@ const router = e.Router();
  */
 router.post("/register", async (req, res, next) => {
   try {
-    const body = req.body as UserInterface;
+    const data = req.body.data as UserInterface;
     const user = await User.findOne({
       where: {
-        name: body.name,
+        name: data.name,
       },
     });
     if (user) {
@@ -38,10 +38,10 @@ router.post("/register", async (req, res, next) => {
       return next(new Error("User already exists!"));
     }
     await User.create({
-      name: body.name,
-      password: encrypt(body.password),
-      openID: UUID(body.name, UUID.DNS),
-      unionID: UUID(body.name, UUID.DNS),
+      name: data.name,
+      password: encrypt(data.password),
+      openID: UUID(data.name, UUID.DNS),
+      unionID: UUID(data.name, UUID.DNS),
       permission: 1,
     });
     res.status(200).json({
